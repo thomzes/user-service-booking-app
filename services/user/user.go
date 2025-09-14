@@ -1,4 +1,4 @@
-package user
+package services
 
 import (
 	"context"
@@ -123,11 +123,12 @@ func (u *UserService) Register(ctx context.Context, req *dto.RegisterRequest) (*
 	}
 
 	user, err := u.repository.GetUser().Register(ctx, &dto.RegisterRequest{
-		Name:     req.Name,
-		Username: req.Username,
-		Password: string(hashedPassword),
-		Email:    req.Email,
-		RoleID:   constants.Customer,
+		Name:        req.Name,
+		Username:    req.Username,
+		Password:    string(hashedPassword),
+		PhoneNumber: req.PhoneNumber,
+		Email:       req.Email,
+		RoleID:      constants.Customer,
 	})
 	if err != nil {
 		return nil, err
@@ -205,6 +206,10 @@ func (u *UserService) Update(ctx context.Context, req *dto.UpdateRequest, uuid s
 		PhoneNumber: req.PhoneNumber,
 	}, uuid)
 
+	if err != nil {
+		return nil, err
+	}
+
 	data = dto.UserResponse{
 		UUID:        userResult.UUID,
 		Name:        userResult.Name,
@@ -218,17 +223,17 @@ func (u *UserService) Update(ctx context.Context, req *dto.UpdateRequest, uuid s
 
 func (u *UserService) GetUserLogin(ctx context.Context) (*dto.UserResponse, error) {
 	var (
-		userLogin = ctx.Value(constants.UserLogin).(*dto.LoginResponse)
+		userLogin = ctx.Value(constants.UserLogin).(*dto.UserResponse)
 		data      dto.UserResponse
 	)
 
 	data = dto.UserResponse{
-		UUID:        userLogin.User.UUID,
-		Name:        userLogin.User.Name,
-		Username:    userLogin.User.Username,
-		PhoneNumber: userLogin.User.PhoneNumber,
-		Email:       userLogin.User.Email,
-		Role:        userLogin.User.Role,
+		UUID:        userLogin.UUID,
+		Name:        userLogin.Name,
+		Username:    userLogin.Username,
+		PhoneNumber: userLogin.PhoneNumber,
+		Email:       userLogin.Email,
+		Role:        userLogin.Role,
 	}
 
 	return &data, nil

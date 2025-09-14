@@ -37,6 +37,7 @@ func (u *UserController) Login(ctx *gin.Context) {
 			Err:  err,
 			Gin:  ctx,
 		})
+		return
 	}
 
 	validate := validator.New()
@@ -61,6 +62,7 @@ func (u *UserController) Login(ctx *gin.Context) {
 			Err:  err,
 			Gin:  ctx,
 		})
+		return
 	}
 
 	response.HttpResponse(response.ParamHTTPResp{
@@ -81,6 +83,7 @@ func (u *UserController) Register(ctx *gin.Context) {
 			Err:  err,
 			Gin:  ctx,
 		})
+		return
 	}
 
 	validate := validator.New()
@@ -105,6 +108,7 @@ func (u *UserController) Register(ctx *gin.Context) {
 			Err:  err,
 			Gin:  ctx,
 		})
+		return
 	}
 
 	response.HttpResponse(response.ParamHTTPResp{
@@ -125,6 +129,7 @@ func (u *UserController) Update(ctx *gin.Context) {
 			Err:  err,
 			Gin:  ctx,
 		})
+		return
 	}
 
 	validate := validator.New()
@@ -149,6 +154,7 @@ func (u *UserController) Update(ctx *gin.Context) {
 			Err:  err,
 			Gin:  ctx,
 		})
+		return
 	}
 
 	response.HttpResponse(response.ParamHTTPResp{
@@ -166,6 +172,7 @@ func (u *UserController) GetUserLogin(ctx *gin.Context) {
 			Err:  err,
 			Gin:  ctx,
 		})
+		return
 	}
 
 	response.HttpResponse(response.ParamHTTPResp{
@@ -183,6 +190,7 @@ func (u *UserController) GetUserByUUID(ctx *gin.Context) {
 			Err:  err,
 			Gin:  ctx,
 		})
+		return
 	}
 
 	response.HttpResponse(response.ParamHTTPResp{

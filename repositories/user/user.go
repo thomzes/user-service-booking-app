@@ -40,7 +40,7 @@ func (r *UserRepository) Register(ctx context.Context, req *dto.RegisterRequest)
 		RoleID:      req.RoleID,
 	}
 
-	err := r.db.WithContext(ctx).Create(&user)
+	err := r.db.WithContext(ctx).Create(&user).Error
 	if err != nil {
 		return nil, errWrap.WrapError(errConstant.ErrSQLError)
 	}
@@ -49,6 +49,7 @@ func (r *UserRepository) Register(ctx context.Context, req *dto.RegisterRequest)
 }
 
 func (r *UserRepository) Update(ctx context.Context, req *dto.UpdateRequest, uuid string) (*models.User, error) {
+
 	user := models.User{
 		Name:        req.Name,
 		Username:    req.Username,
@@ -57,7 +58,7 @@ func (r *UserRepository) Update(ctx context.Context, req *dto.UpdateRequest, uui
 		Email:       req.Email,
 	}
 
-	err := r.db.WithContext(ctx).Where("uuid = ?", uuid).Updates(&req).Error
+	err := r.db.WithContext(ctx).Where("uuid = ?", uuid).Updates(&user).Error
 	if err != nil {
 		return nil, errWrap.WrapError(errConstant.ErrSQLError)
 	}
@@ -66,7 +67,7 @@ func (r *UserRepository) Update(ctx context.Context, req *dto.UpdateRequest, uui
 }
 
 func (r *UserRepository) FindByUsername(ctx context.Context, username string) (*models.User, error) {
-	user := models.User{}
+	var user models.User
 
 	err := r.db.WithContext(ctx).Preload("Role").Where("username = ?", username).First(&user).Error
 
@@ -74,32 +75,35 @@ func (r *UserRepository) FindByUsername(ctx context.Context, username string) (*
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errConstant.ErrUserNotFound
 		}
+		return nil, errWrap.WrapError(errConstant.ErrSQLError)
 	}
 
 	return &user, nil
 }
 
 func (r *UserRepository) FindByEmail(ctx context.Context, email string) (*models.User, error) {
-	user := models.User{}
+	var user models.User
 
 	err := r.db.WithContext(ctx).Preload("Role").Where("email = ?", email).First(&user).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errConstant.ErrUserNotFound
 		}
+		return nil, errWrap.WrapError(errConstant.ErrSQLError)
 	}
 
 	return &user, nil
 }
 
 func (r *UserRepository) FindByUUID(ctx context.Context, uuid string) (*models.User, error) {
-	user := models.User{}
+	var user models.User
 
 	err := r.db.WithContext(ctx).Preload("Role").Where("uuid = ?", uuid).First(&user).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errConstant.ErrUserNotFound
 		}
+		return nil, errWrap.WrapError(errConstant.ErrSQLError)
 	}
 
 	return &user, nil

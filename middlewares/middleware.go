@@ -55,7 +55,7 @@ func extractBearerToken(token string) string {
 	arrayToken := strings.Split(token, " ")
 
 	if len(arrayToken) == 2 {
-		return arrayToken[0]
+		return arrayToken[1]
 	}
 
 	return ""
@@ -88,7 +88,7 @@ func validateAPIKey(ctx *gin.Context) error {
 }
 
 func validateBearerToken(ctx *gin.Context, token string) error {
-	if !strings.Contains(token, "bearer") {
+	if !strings.Contains(token, "Bearer") {
 		return errConstant.ErrUnauthorize
 	}
 
@@ -98,6 +98,7 @@ func validateBearerToken(ctx *gin.Context, token string) error {
 	}
 
 	claims := &services.Claims{}
+
 	tokenJwt, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 		_, ok := token.Method.(*jwt.SigningMethodHMAC)
 		if !ok {
@@ -122,8 +123,8 @@ func validateBearerToken(ctx *gin.Context, token string) error {
 func Authenticate() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var err error
-		token := ctx.GetHeader("Authorization")
-		if token != "" {
+		token := ctx.GetHeader(constants.Authorization)
+		if token == "" {
 			responseUnauthorize(ctx, errConstant.ErrUnauthorize.Error())
 			return
 		}
