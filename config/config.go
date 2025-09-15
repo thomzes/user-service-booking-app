@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/sirupsen/logrus"
+	_ "github.com/spf13/viper/remote"
 	"github.com/thomzes/user-service-booking-app/common/util"
 )
 
